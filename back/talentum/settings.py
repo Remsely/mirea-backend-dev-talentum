@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
-
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -108,9 +108,16 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Talentum API',
     'DESCRIPTION': 'API системы оценки эффективности сотрудников',
     'VERSION': '1.0.0',
+    'TAGS': [
+        {'name': 'auth', 'description': 'Аутентификация и авторизация'},
+        {'name': 'users', 'description': 'Управление пользователями'},
+        {'name': 'employees', 'description': 'Управление сотрудниками'},
+        {'name': 'goals', 'description': 'Управление целями сотрудников'},
+        {'name': 'feedback', 'description': 'Управление обратной связью'},
+    ],
 }
 
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
