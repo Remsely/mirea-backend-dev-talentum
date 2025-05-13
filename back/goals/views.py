@@ -117,6 +117,10 @@ class GoalViewSet(viewsets.ModelViewSet):
             )
         instance.delete()
 
+    @extend_schema(
+        tags=['goals'],
+        description="Отправка цели на согласование"
+    )
     @action(detail=True, methods=['post'])
     def submit(self, request, pk=None):
         goal = self.get_object()
@@ -144,6 +148,10 @@ class GoalViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data)
 
+    @extend_schema(
+        tags=['goals'],
+        description="Одобрение цели руководителем"
+    )
     @action(
         detail=True,
         methods=['post'],
@@ -179,6 +187,10 @@ class GoalViewSet(viewsets.ModelViewSet):
         except Employee.DoesNotExist:
             raise PermissionDenied("У вас нет профиля сотрудника")
 
+    @extend_schema(
+        tags=['goals'],
+        description="Завершение выполнения цели"
+    )
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
         goal = self.get_object()
