@@ -109,11 +109,34 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API системы оценки эффективности сотрудников',
     'VERSION': '1.0.0',
     'TAGS': [
-        {'name': 'auth', 'description': 'Аутентификация и авторизация'},
-        {'name': 'users', 'description': 'Управление пользователями'},
-        {'name': 'employees', 'description': 'Управление сотрудниками'},
-        {'name': 'goals', 'description': 'Управление целями сотрудников'},
-        {'name': 'feedback', 'description': 'Управление обратной связью'},
+        {
+            'name': 'auth',
+            'description': 'Аутентификация и авторизация'
+        },
+        {
+            'name': 'users',
+            'description': 'Управление пользователями'
+        },
+        {
+            'name': 'employees',
+            'description': 'Управление сотрудниками'
+        },
+        {
+            'name': 'goals',
+            'description': 'Управление целями сотрудников'
+        },
+        {
+            'name': 'progress',
+            'description': 'Управление прогрессом по выполнению цели'
+        },
+        {
+            'name': 'self-assessment',
+            'description': 'Управление самооценкой по итогу выполнения цели'
+        },
+        {
+            'name': 'feedback',
+            'description': 'Управление обратной связью'
+        },
     ],
 }
 

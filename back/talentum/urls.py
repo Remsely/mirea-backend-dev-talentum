@@ -17,6 +17,6 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/', include(accounts_api_router.urls)),
 
-    # path('api/', include('goals.urls')),
+    path('api/', include('goals.urls')),
     # path('api/', include('feedback.urls')),
 ]
