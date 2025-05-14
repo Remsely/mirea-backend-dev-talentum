@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounts.serializers import EmployeeSerializer
-from feedback.serializers import SelfAssessmentSerializer
+from feedback.serializers import SelfAssessmentSerializer, FeedbackRequestListSerializer, ExpertEvaluationSerializer
 from .models import Goal, Progress
 
 
@@ -47,10 +47,14 @@ class GoalDetailSerializer(serializers.ModelSerializer):
         read_only=True
     )
     self_assessment = SelfAssessmentSerializer(read_only=True)
+    feedback_requests = FeedbackRequestListSerializer(many=True, read_only=True)
+    expert_evaluation = ExpertEvaluationSerializer(read_only=True)
     can_be_submitted = serializers.SerializerMethodField()
     can_be_approved = serializers.SerializerMethodField()
     can_add_progress = serializers.SerializerMethodField()
     can_add_self_assessment = serializers.SerializerMethodField()
+    can_request_feedback = serializers.SerializerMethodField()
+    can_add_expert_evaluation = serializers.SerializerMethodField()
     can_complete = serializers.SerializerMethodField()
 
     class Meta:
@@ -69,10 +73,14 @@ class GoalDetailSerializer(serializers.ModelSerializer):
             'updated_dttm',
             'progress_updates',
             'self_assessment',
+            'feedback_requests',
+            'expert_evaluation',
             'can_be_submitted',
             'can_be_approved',
             'can_add_progress',
             'can_add_self_assessment',
+            'can_request_feedback',
+            'can_add_expert_evaluation',
             'can_complete'
         )
         read_only_fields = ('id', 'employee', 'created_dttm', 'updated_dttm')
@@ -88,6 +96,12 @@ class GoalDetailSerializer(serializers.ModelSerializer):
 
     def get_can_add_self_assessment(self, obj):
         return obj.can_add_self_assessment()
+    
+    def get_can_request_feedback(self, obj):
+        return obj.can_request_feedback()
+    
+    def get_can_add_expert_evaluation(self, obj):
+        return obj.can_add_expert_evaluation()
 
     def get_can_complete(self, obj):
         return obj.can_complete()

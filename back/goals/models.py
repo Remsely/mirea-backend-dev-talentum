@@ -82,8 +82,14 @@ class Goal(models.Model):
         return (self.status == self.STATUS_IN_PROGRESS
                 or self.status == self.STATUS_PENDING_ASSESSMENT)
 
+    def can_request_feedback(self):
+        return self.status == self.STATUS_PENDING_ASSESSMENT
+
     def can_complete(self):
         return self.status == self.STATUS_IN_PROGRESS
+
+    def can_add_expert_evaluation(self):
+        return self.status == self.STATUS_PENDING_ASSESSMENT
 
 
 class Progress(models.Model):

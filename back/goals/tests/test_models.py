@@ -82,6 +82,9 @@ class GoalModelTests(ModelTestsMixin, APITestCase):
         self.assertFalse(self.goal.can_be_approved())
         self.assertFalse(self.goal.can_add_progress())
         self.assertFalse(self.goal.can_complete())
+        self.assertFalse(self.goal.can_add_self_assessment())
+        self.assertFalse(self.goal.can_request_feedback())
+        self.assertFalse(self.goal.can_add_expert_evaluation())
 
         # В статусе Pending Approval
         self.goal.status = Goal.STATUS_PENDING_APPROVAL
@@ -90,6 +93,9 @@ class GoalModelTests(ModelTestsMixin, APITestCase):
         self.assertTrue(self.goal.can_be_approved())
         self.assertFalse(self.goal.can_add_progress())
         self.assertFalse(self.goal.can_complete())
+        self.assertFalse(self.goal.can_add_self_assessment())
+        self.assertFalse(self.goal.can_request_feedback())
+        self.assertFalse(self.goal.can_add_expert_evaluation())
 
         # В статусе In Progress
         self.goal.status = Goal.STATUS_IN_PROGRESS
@@ -99,6 +105,8 @@ class GoalModelTests(ModelTestsMixin, APITestCase):
         self.assertTrue(self.goal.can_add_progress())
         self.assertTrue(self.goal.can_complete())
         self.assertTrue(self.goal.can_add_self_assessment())
+        self.assertFalse(self.goal.can_request_feedback())
+        self.assertFalse(self.goal.can_add_expert_evaluation())
 
         # В статусе Pending Assessment
         self.goal.status = Goal.STATUS_PENDING_ASSESSMENT
@@ -108,6 +116,8 @@ class GoalModelTests(ModelTestsMixin, APITestCase):
         self.assertFalse(self.goal.can_add_progress())
         self.assertFalse(self.goal.can_complete())
         self.assertTrue(self.goal.can_add_self_assessment())
+        self.assertTrue(self.goal.can_request_feedback())
+        self.assertTrue(self.goal.can_add_expert_evaluation())
 
 
 class ProgressModelTests(ModelTestsMixin, APITestCase):

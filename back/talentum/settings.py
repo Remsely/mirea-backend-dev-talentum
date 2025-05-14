@@ -135,7 +135,11 @@ SPECTACULAR_SETTINGS = {
         },
         {
             'name': 'feedback',
-            'description': 'Управление обратной связью'
+            'description': 'Управление обратной связью от коллег'
+        },
+        {
+            'name': 'expert-evaluation',
+            'description': 'Управление экспертной оценкой'
         },
     ],
 }
