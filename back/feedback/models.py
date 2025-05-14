@@ -1,6 +1,7 @@
-from accounts.models import Employee
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from accounts.models import Employee
 from goals.models import Goal
 
 
@@ -38,12 +39,12 @@ class SelfAssessment(models.Model):
 class FeedbackRequest(models.Model):
     STATUS_PENDING = 'pending'
     STATUS_COMPLETED = 'completed'
-
+    
     STATUS_CHOICES = [
         (STATUS_PENDING, _('Ожидает отзыва')),
         (STATUS_COMPLETED, _('Завершен')),
     ]
-
+    
     goal = models.ForeignKey(
         Goal,
         on_delete=models.CASCADE,
@@ -76,13 +77,13 @@ class FeedbackRequest(models.Model):
         _('Дата создания'),
         auto_now_add=True
     )
-
+    
     class Meta:
         verbose_name = _('Запрос отзыва')
         verbose_name_plural = _('Запросы отзывов')
         unique_together = ('goal', 'reviewer')
         db_table = 'feedback_requests'
-
+    
     def __str__(self):
         return f"Запрос отзыва от {self.requested_by.user.get_full_name()} для {self.reviewer.user.get_full_name()}"
 
@@ -108,18 +109,17 @@ class PeerFeedback(models.Model):
         _('Дата создания'),
         auto_now_add=True
     )
-
+    
     class Meta:
         verbose_name = _('Отзыв коллеги')
         verbose_name_plural = _('Отзывы коллег')
         db_table = 'peer_feedback'
-
+    
     def __str__(self):
         return f"Отзыв от {self.feedback_request.reviewer.user.get_full_name()} на цель {self.feedback_request.goal.title}"
-
+    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # При сохранении отзыва меняем статус запроса на "Завершен"
         if self.feedback_request.status != FeedbackRequest.STATUS_COMPLETED:
             self.feedback_request.status = FeedbackRequest.STATUS_COMPLETED
             self.feedback_request.save(update_fields=['status'])
@@ -152,18 +152,17 @@ class ExpertEvaluation(models.Model):
         _('Дата создания'),
         auto_now_add=True
     )
-
+    
     class Meta:
         verbose_name = _('Итоговая оценка от лидера профессии')
         verbose_name_plural = _('Итоговые оценки от лидеров профессии')
         db_table = 'expert_evaluations'
-
+    
     def __str__(self):
         return f"Оценка от {self.expert.user.get_full_name()} на цель {self.goal.title}"
-
+    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        # При сохранении оценки лидера профессии меняем статус цели на "Завершена"
         if self.goal.status != Goal.STATUS_COMPLETED:
             self.goal.status = Goal.STATUS_COMPLETED
             self.goal.save(update_fields=['status'])
