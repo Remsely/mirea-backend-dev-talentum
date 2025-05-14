@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import Goal, Progress, SelfAssessment
+from .models import Goal, Progress
 
 
 class ProgressInline(admin.TabularInline):
@@ -42,12 +42,4 @@ class ProgressAdmin(admin.ModelAdmin):
     list_filter = ('created_dttm',)
     search_fields = ('goal__title', 'description')
     date_hierarchy = 'created_dttm'
-    raw_id_fields = ('goal',)
-
-
-@admin.register(SelfAssessment)
-class SelfAssessmentAdmin(admin.ModelAdmin):
-    list_display = ('goal', 'rating', 'created_dttm')
-    list_filter = ('rating', 'created_dttm')
-    search_fields = ('goal__title', 'comments', 'areas_to_improve')
     raw_id_fields = ('goal',)

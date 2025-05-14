@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from accounts.serializers import EmployeeSerializer
-from .models import Goal, Progress, SelfAssessment
+from feedback.serializers import SelfAssessmentSerializer
+from .models import Goal, Progress
 
 
 class GoalListSerializer(serializers.ModelSerializer):
@@ -31,19 +32,6 @@ class ProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Progress
         fields = ('id', 'description', 'created_dttm')
-        read_only_fields = ('id', 'created_dttm')
-
-
-class SelfAssessmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SelfAssessment
-        fields = (
-            'id',
-            'rating',
-            'comments',
-            'areas_to_improve',
-            'created_dttm'
-        )
         read_only_fields = ('id', 'created_dttm')
 
 

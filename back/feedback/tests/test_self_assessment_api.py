@@ -6,7 +6,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models import User, Employee
-from goals.models import Goal, SelfAssessment
+from goals.models import Goal
+from feedback.models import SelfAssessment
 
 
 class SelfAssessmentAPITestCase(APITestCase):
@@ -384,4 +385,4 @@ class SelfAssessmentAPITestCase(APITestCase):
         # Проверяем, что самооценка не обновлена
         assessment.refresh_from_db()
         self.assertEqual(assessment.rating, 7)
-        self.assertEqual(assessment.comments, 'Initial Assessment')
+        self.assertEqual(assessment.comments, 'Initial Assessment') 

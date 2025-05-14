@@ -4,7 +4,8 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from accounts.models import User, Employee
-from goals.models import Goal, Progress, SelfAssessment
+from feedback.models import SelfAssessment
+from goals.models import Goal, Progress
 
 
 class SerializersTestMixin:
@@ -142,17 +143,6 @@ class GoalSerializersTestCase(SerializersTestMixin, APITestCase):
         self.assertEqual(data['description'], 'Test Progress')
         self.assertIn('created_dttm', data)
 
-    def test_self_assessment_serializer(self):
-        """Тест сериализатора SelfAssessmentSerializer"""
-        from goals.serializers import SelfAssessmentSerializer
-
-        serializer = SelfAssessmentSerializer(self.assessment)
-        data = serializer.data
-
-        self.assertEqual(data['rating'], 8)
-        self.assertEqual(data['comments'], 'Test Assessment')
-        self.assertEqual(data['areas_to_improve'], 'Test Areas')
-        self.assertIn('created_dttm', data)
 
     def test_goal_create_serializer_validation(self):
         """Тест валидации в GoalCreateSerializer"""

@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from accounts.models import User, Employee
-from goals.models import Goal, Progress, SelfAssessment
+from goals.models import Goal, Progress
 
 
 class ModelTestsMixin:
@@ -130,24 +130,3 @@ class ProgressModelTests(ModelTestsMixin, APITestCase):
         expected_str = (f"Прогресс для {self.goal.title} "
                         f"от {progress.created_dttm.strftime('%d.%m.%Y')}")
         self.assertEqual(str(progress), expected_str)
-
-
-class SelfAssessmentModelTests(ModelTestsMixin, APITestCase):
-    """Тесты логики модели SelfAssessment"""
-
-    def setUp(self):
-        """Создание цели в статусе 'В процессе' перед каждым тестом"""
-        self.goal = Goal.objects.create(
-            status=Goal.STATUS_IN_PROGRESS,
-            **self.__class__.goal_data
-        )
-
-    def test_self_assessment_str_representation(self):
-        """Тест строкового представления самооценки"""
-        assessment = SelfAssessment.objects.create(
-            goal=self.goal,
-            rating=8,
-            comments='Test Comments',
-            areas_to_improve='Test Areas'
-        )
-        self.assertEqual(str(assessment), f"Самооценка для {self.goal.title}")
