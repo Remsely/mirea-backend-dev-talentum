@@ -3,7 +3,7 @@ from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiParameter, \
     extend_schema_view
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, status, parsers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -163,11 +163,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     search_fields = ['user__username', 'user__email', 'user__first_name',
                      'user__last_name', 'position']
     filterset_fields = ['position', 'manager']
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def get_permissions(self):
         if self.action in ['create', 'destroy']:
             permission_classes = [IsAdminOnly]
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ['update', 'partial_update', 'upload_photo']:
             permission_classes = [IsEmployeeOwnerOrAdmin]
         else:
             permission_classes = [IsAuthenticated]
@@ -246,3 +247,24 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 {"detail": "У вас нет профиля сотрудника"},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+    @extend_schema(
+        tags=['employees'],
+        description="Загрузка фотографии профиля сотрудника"
+    )
+    @action(detail=True, methods=['post'], 
+            permission_classes=[IsEmployeeOwnerOrAdmin])
+    def upload_photo(self, request, pk=None):
+        employee = self.get_object()
+        
+        if 'profile_photo' not in request.data:
+            return Response(
+                {"detail": "Файл не предоставлен"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        employee.profile_photo = request.data['profile_photo']
+        employee.save()
+        
+        serializer = EmployeeDetailSerializer(employee)
+        return Response(serializer.data)

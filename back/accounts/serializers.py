@@ -75,6 +75,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     manager_name = serializers.SerializerMethodField()
+    profile_photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee
@@ -84,13 +85,20 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'hire_dt',
             'position',
             'manager',
-            'manager_name'
+            'manager_name',
+            'profile_photo',
+            'profile_photo_url'
         )
-        read_only_fields = ('id', 'user')
+        read_only_fields = ('id', 'user', 'profile_photo_url')
 
     def get_manager_name(self, obj):
         if obj.manager:
             return obj.manager.user.get_full_name()
+        return None
+        
+    def get_profile_photo_url(self, obj):
+        if obj.profile_photo:
+            return obj.profile_photo.url
         return None
 
 
@@ -99,6 +107,7 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
     subordinates = serializers.SerializerMethodField()
     manager_name = serializers.SerializerMethodField()
     is_manager = serializers.SerializerMethodField()
+    profile_photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee
@@ -110,9 +119,10 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
             'manager',
             'manager_name',
             'subordinates',
-            'is_manager'
+            'is_manager',
+            'profile_photo_url'
         )
-        read_only_fields = ('id', 'user', 'is_manager')
+        read_only_fields = ('id', 'user', 'is_manager', 'profile_photo_url')
 
     def get_subordinates(self, obj):
         return EmployeeSerializer(obj.subordinates.all(), many=True).data
@@ -124,6 +134,11 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
 
     def get_is_manager(self, obj):
         return obj.subordinates.exists()
+        
+    def get_profile_photo_url(self, obj):
+        if obj.profile_photo:
+            return obj.profile_photo.url
+        return None
 
 
 class EmployeeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -131,7 +146,7 @@ class EmployeeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ('user_id', 'hire_dt', 'position', 'manager')
+        fields = ('user_id', 'hire_dt', 'position', 'manager', 'profile_photo')
 
     def validate_user_id(self, value):
         if not User.objects.filter(id=value).exists():
@@ -179,6 +194,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data['position'] = employee.position
             data['has_employee_profile'] = True
             data['is_manager'] = employee.subordinates.exists()
+            if employee.profile_photo:
+                data['profile_photo_url'] = employee.profile_photo.url
         except Employee.DoesNotExist:
             data['has_employee_profile'] = False
             data['is_manager'] = False

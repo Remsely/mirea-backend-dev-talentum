@@ -34,14 +34,16 @@ class AuthenticationTests(TestCase):
         cls.employee = Employee.objects.create(
             user=cls.employee_user,
             hire_dt='2021-01-01',
-            position='Developer'
+            position='Developer',
+            profile_photo=None
         )
 
         # Создаем профиль менеджера с подчиненными
         cls.manager = Employee.objects.create(
             user=cls.manager_user,
             hire_dt='2020-01-01',
-            position='Team Lead'
+            position='Team Lead',
+            profile_photo=None
         )
 
         # Устанавливаем связь менеджер-подчиненный

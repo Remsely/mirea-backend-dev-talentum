@@ -1,0 +1,27 @@
+# Python кэш
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+
+# Виртуальное окружение
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Локальные файлы
+*.log
+.DS_Store
+media/
+static/
+media-test/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo 

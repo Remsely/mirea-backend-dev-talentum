@@ -1,4 +1,5 @@
 from django.test import SimpleTestCase, TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from accounts.models import User, Employee
 
@@ -65,3 +66,38 @@ class UserModelMethodTests(TestCase):
         )
 
         self.assertFalse(no_profile_user.is_manager())
+
+
+class EmployeeModelTests(TestCase):
+    """Тесты модели Employee"""
+
+    def test_employee_profile_photo(self):
+        """Тест поля profile_photo модели Employee"""
+        user = User.objects.create_user(
+            username='test_photo',
+            email='test_photo@example.com',
+            password='password123',
+            first_name='Test',
+            last_name='Photo',
+            role='employee'
+        )
+
+        # Создаем тестовое изображение
+        image_content = b'GIF87a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00ccc,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+        test_image = SimpleUploadedFile(
+            'test_image.gif', 
+            image_content, 
+            content_type='image/gif'
+        )
+
+        # Создаем сотрудника с фото профиля
+        employee = Employee.objects.create(
+            user=user,
+            hire_dt='2022-01-01',
+            position='Test Position',
+            profile_photo=test_image
+        )
+
+        # Проверяем, что фото сохранилось
+        self.assertTrue(employee.profile_photo)
+        self.assertIn('test_image', employee.profile_photo.name)

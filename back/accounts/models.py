@@ -64,6 +64,12 @@ class Employee(models.Model):
         related_name='subordinates',
         verbose_name=_('руководитель')
     )
+    profile_photo = models.ImageField(
+        _('фото профиля'),
+        upload_to='profile_photos',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = _('сотрудник')
