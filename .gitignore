@@ -9,3 +9,42 @@ __pycache__/
 # Coverage
 .coverage
 back/media/profile_photos/
+
+# Зависимости
+node_modules/
+
+# Vite/Bun сборка
+dist/
+build/
+.vite/
+.vscode-test/
+
+# Логи
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# Переменные среды
+.env
+.env.*.local
+
+# Служебные файлы ОС
+.DS_Store
+Thumbs.db
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Кеши и отчёты
+.cache/
+coverage/
+*.lcov
+
+# Дополнительно (если используете Yarn PnP)
+.pnp.*
