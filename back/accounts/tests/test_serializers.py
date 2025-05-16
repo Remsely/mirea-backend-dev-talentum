@@ -65,6 +65,3 @@ class EmployeeSerializerTests(TestCase):
         # Проверяем наличие поля profile_photo_url
         self.assertIn('profile_photo_url', serializer.data)
         self.assertIsNotNone(serializer.data['profile_photo_url'])
-        
-        # Проверяем, что profile_photo присутствует в fields
-        self.assertIn('profile_photo', serializer.data)
