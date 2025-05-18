@@ -15,7 +15,7 @@ services:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
       - ALLOWED_HOSTS=localhost,127.0.0.1
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173
       - AWS_ACCESS_KEY_ID=talentum
       - AWS_SECRET_ACCESS_KEY=talentum_1234
       - AWS_STORAGE_BUCKET_NAME=talentum

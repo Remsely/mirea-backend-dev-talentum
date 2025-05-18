@@ -9,5 +9,8 @@ echo "Database started"
 echo "Applying migrations..."
 python manage.py migrate
 
+echo "Creating admin user if not exists..."
+python manage.py create_admin
+
 echo "Starting server..."
 python manage.py runserver 0.0.0.0:8000 

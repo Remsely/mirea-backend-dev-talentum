@@ -1,54 +1,78 @@
-# React + TypeScript + Vite
+# Talentum - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Клиентская часть приложения для управления целями сотрудников.
 
-Currently, two official plugins are available:
+## Структура проекта
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+src/
+├── api/              # API-интеграции с бэкендом
+│   ├── axios.ts      # Настройка Axios с перехватчиками для токенов
+│   ├── auth.ts       # API для аутентификации и пользователей
+│   ├── goals.ts      # API для работы с целями
+│   └── feedback.ts   # API для работы с отзывами
+├── components/       # Переиспользуемые компоненты
+├── hooks/            # Пользовательские хуки
+├── layouts/          # Компоненты макетов
+│   ├── AuthLayout.tsx    # Макет для защищенных маршрутов
+│   └── MainLayout.tsx    # Основной макет с навигацией
+├── pages/            # Страницы приложения
+│   ├── Dashboard.tsx     # Главная страница дашборда
+│   └── Login.tsx         # Страница входа
+├── store/            # Управление состоянием
+│   └── auth.ts       # Атомы для аутентификации и пользователей
+├── types/            # TypeScript типы
+│   ├── auth.ts       # Типы для аутентификации и пользователей
+│   ├── goals.ts      # Типы для целей
+│   └── feedback.ts   # Типы для отзывов
+├── utils/            # Вспомогательные функции
+├── App.tsx           # Корневой компонент с маршрутизацией
+└── main.tsx          # Точка входа
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Реализованная функциональность
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Аутентификация и авторизация**
+   - Вход в систему с JWT-токенами
+   - Автоматическое обновление токенов
+   - Защищенные маршруты для авторизованных пользователей
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. **Роли пользователей**
+   - Сотрудник: управление своими целями
+   - Руководитель: просмотр и согласование целей подчиненных
+   - Лидер профессии: итоговая оценка целей
+   - Администратор: управление пользователями
+
+3. **Основные страницы**
+   - Дашборд с общей информацией
+   - Страница входа
+   - Заготовки для других страниц
+
+## Технологический стек
+
+- React 19
+- TypeScript
+- React Router для маршрутизации
+- Jotai для управления состоянием
+- Axios для HTTP-запросов
+- React Query для кеширования данных
+
+## Запуск проекта
+
+```bash
+# Установка зависимостей
+npm install
+
+# Запуск в режиме разработки
+npm run dev
+
+# Сборка для продакшена
+npm run build
 ```
+
+## Дальнейшее развитие
+
+1. Реализация страниц для управления целями
+2. Реализация страниц для отзывов и оценки целей
+3. Добавление форм для создания и редактирования целей
+4. Улучшение UI/UX компонентов
