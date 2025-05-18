@@ -1,6 +1,27 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from storages.backends.s3boto3 import S3Boto3Storage
+from urllib.parse import urljoin
+
+
+class ProfilePhotoStorage(S3Boto3Storage):
+    """
+    Кастомный класс хранилища для профильных фотографий.
+    Хранит файлы в директории 'profile_photos'.
+    """
+    location = 'profile_photos'
+    file_overwrite = False
+    secure_urls = False
+    
+    def url(self, name):
+        """
+        Переопределяем метод url для явного формирования HTTP URLs
+        """
+        url = super().url(name)
+        if url.startswith('https://'):
+            return url.replace('https://', 'http://', 1)
+        return url
 
 
 class User(AbstractUser):
@@ -66,7 +87,8 @@ class Employee(models.Model):
     )
     profile_photo = models.ImageField(
         _('фото профиля'),
-        upload_to='profile_photos',
+        upload_to='',  # Пустая строка, так как путь указан в storage
+        storage=ProfilePhotoStorage(),
         null=True,
         blank=True
     )

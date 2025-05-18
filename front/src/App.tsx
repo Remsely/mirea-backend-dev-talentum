@@ -4,6 +4,9 @@ import { AuthLayout, GuestLayout } from './layouts/AuthLayout';
 import { MainLayout } from './layouts/MainLayout';
 import { LoginPage } from './pages/Login';
 import { DashboardPage } from './pages/Dashboard';
+import { GoalsPage } from './pages/Goals';
+import { GoalFormPage } from './pages/GoalForm';
+import { GoalDetailPage } from './pages/GoalDetail';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -22,13 +25,18 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/goals" element={<div>Мои цели (будет реализовано)</div>} />
-              <Route path="/goals/:id" element={<div>Детали цели (будет реализовано)</div>} />
-              <Route path="/goals/new" element={<div>Создание цели (будет реализовано)</div>} />
-              <Route path="/goals/pending-approval" element={<div>Цели на согласование (будет реализовано)</div>} />
-              <Route path="/team" element={<div>Моя команда (будет реализовано)</div>} />
+              
+              {/* Goal management */}
+              <Route path="/goals" element={<GoalsPage />} />
+              <Route path="/goals/new" element={<GoalFormPage />} />
+              <Route path="/goals/:id/edit" element={<GoalFormPage />} />
+              <Route path="/goals/:id" element={<GoalDetailPage />} />
+              
+              {/* Feedback system */}
               <Route path="/feedback/requests/:id" element={<div>Отзыв на цель (будет реализовано)</div>} />
               <Route path="/expertise/pending-evaluation" element={<div>Цели на оценку (будет реализовано)</div>} />
+              
+              {/* Admin panel */}
               <Route path="/admin" element={<div>Администрирование (будет реализовано)</div>} />
             </Route>
           </Route>

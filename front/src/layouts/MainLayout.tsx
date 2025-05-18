@@ -4,7 +4,6 @@ import {
   currentUserAtom, 
   employeeProfileAtom, 
   clearAuthAtom,
-  isManagerAtom,
   isExpertiseLeaderAtom,
   isAdminAtom
 } from '../store/auth';
@@ -17,7 +16,6 @@ export const MainLayout = () => {
   const navigate = useNavigate();
   const currentUser = useAtomValue(currentUserAtom);
   const employeeProfile = useAtomValue(employeeProfileAtom);
-  const isManager = useAtomValue(isManagerAtom);
   const isExpertiseLeader = useAtomValue(isExpertiseLeaderAtom);
   const isAdmin = useAtomValue(isAdminAtom);
   const [, clearAuth] = useAtom(clearAuthAtom);
@@ -51,18 +49,8 @@ export const MainLayout = () => {
               <Link to="/dashboard">Главная</Link>
             </li>
             <li>
-              <Link to="/goals">Мои цели</Link>
+              <Link to="/goals">Цели</Link>
             </li>
-            {isManager && (
-              <li>
-                <Link to="/team">Моя команда</Link>
-              </li>
-            )}
-            {isManager && (
-              <li>
-                <Link to="/goals/pending-approval">На согласование</Link>
-              </li>
-            )}
             {isExpertiseLeader && (
               <li>
                 <Link to="/expertise/pending-evaluation">Ожидают оценки</Link>

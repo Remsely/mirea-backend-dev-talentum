@@ -19,7 +19,8 @@ class IsAdminOnly(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        return True # TODO: remove this
+        return request.user.is_staff or request.user.role == 'admin'
+
 
 class IsEmployeeOwnerOrAdmin(permissions.BasePermission):
     """

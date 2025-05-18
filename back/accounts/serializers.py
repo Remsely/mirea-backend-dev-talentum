@@ -97,8 +97,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return None
         
     def get_profile_photo_url(self, obj):
-        if obj.profile_photo:
-            return obj.profile_photo.url
+        if obj.profile_photo and hasattr(obj.profile_photo, 'url'):
+            url = obj.profile_photo.url
+            if url.startswith('https://'):
+                return url.replace('https://', 'http://', 1)
+            return url
         return None
 
 
@@ -136,8 +139,11 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
         return obj.subordinates.exists()
         
     def get_profile_photo_url(self, obj):
-        if obj.profile_photo:
-            return obj.profile_photo.url
+        if obj.profile_photo and hasattr(obj.profile_photo, 'url'):
+            url = obj.profile_photo.url
+            if url.startswith('https://'):
+                return url.replace('https://', 'http://', 1)
+            return url
         return None
 
 
@@ -164,6 +170,14 @@ class EmployeeCreateUpdateSerializer(serializers.ModelSerializer):
         user = User.objects.get(id=user_id)
         employee = Employee.objects.create(user=user, **validated_data)
         return employee
+
+
+class EmployeePhotoUploadSerializer(serializers.ModelSerializer):
+    profile_photo = serializers.ImageField(required=True)
+    
+    class Meta:
+        model = Employee
+        fields = ('profile_photo',)
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

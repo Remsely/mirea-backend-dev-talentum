@@ -16,7 +16,7 @@ from accounts.permissions import IsAdminOrSelf, IsAdminOnly, \
 from accounts.serializers import CustomTokenObtainPairSerializer, \
     UserSerializer, UserCreateSerializer, UserDetailSerializer, \
     EmployeeSerializer, EmployeeDetailSerializer, \
-    EmployeeCreateUpdateSerializer
+    EmployeeCreateUpdateSerializer, EmployeePhotoUploadSerializer
 
 User = get_user_model()
 
@@ -179,6 +179,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return EmployeeDetailSerializer
         elif self.action in ['create', 'update', 'partial_update']:
             return EmployeeCreateUpdateSerializer
+        elif self.action == 'upload_photo':
+            return EmployeePhotoUploadSerializer
         return EmployeeSerializer
 
     @extend_schema(
@@ -250,21 +252,39 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         tags=['employees'],
-        description="Загрузка фотографии профиля сотрудника"
+        description="Загрузка фотографии профиля сотрудника",
+        request={
+            'multipart/form-data': {
+                'type': 'object',
+                'properties': {
+                    'profile_photo': {
+                        'type': 'string',
+                        'format': 'binary'
+                    }
+                },
+                'required': ['profile_photo']
+            }
+        },
+        responses={
+            200: EmployeeDetailSerializer,
+            400: {"description": "Неверный формат файла или другая ошибка валидации"}
+        }
     )
     @action(detail=True, methods=['post'], 
             permission_classes=[IsEmployeeOwnerOrAdmin])
     def upload_photo(self, request, pk=None):
         employee = self.get_object()
         
-        if 'profile_photo' not in request.data:
+        serializer = EmployeePhotoUploadSerializer(
+            instance=employee, 
+            data=request.data
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
             return Response(
-                {"detail": "Файл не предоставлен"},
-                status=status.HTTP_400_BAD_REQUEST
+                EmployeeDetailSerializer(employee).data, 
+                status=status.HTTP_200_OK
             )
-        
-        employee.profile_photo = request.data['profile_photo']
-        employee.save()
-        
-        serializer = EmployeeDetailSerializer(employee)
-        return Response(serializer.data)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

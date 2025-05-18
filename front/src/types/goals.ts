@@ -13,12 +13,13 @@ export interface Goal {
   employee: Employee;
   created_dttm: string;
   updated_dttm: string;
-  progress_entries: Progress[];
+  progress_entries?: Progress[];
+  progress_updates?: Progress[];
 }
 
-export type GoalCreate = Omit<Goal, 'id' | 'status' | 'created_dttm' | 'updated_dttm' | 'progress_entries'>;
+export type GoalCreate = Omit<Goal, 'id' | 'status' | 'created_dttm' | 'updated_dttm' | 'progress_entries' | 'progress_updates'>;
 
-export type GoalUpdate = Partial<Omit<Goal, 'id' | 'status' | 'created_dttm' | 'updated_dttm' | 'progress_entries'>>;
+export type GoalUpdate = Partial<Omit<Goal, 'id' | 'status' | 'created_dttm' | 'updated_dttm' | 'progress_entries' | 'progress_updates'>>;
 
 export interface Progress {
   id: number;

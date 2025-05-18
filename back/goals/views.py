@@ -77,6 +77,10 @@ class GoalViewSet(viewsets.ModelViewSet):
         try:
             employee = user.employee_profile
 
+            # If this is a request for personal goals only
+            if self.action == 'my_goals':
+                return self.queryset.filter(employee=employee)
+                
             employee_goals = Q(employee=employee)
 
             if employee.subordinates.exists():
@@ -209,6 +213,44 @@ class GoalViewSet(viewsets.ModelViewSet):
             }
         )
         return Response(serializer.data)
+
+    @extend_schema(
+        tags=['goals'],
+        description="Получение только личных целей текущего пользователя"
+    )
+    @action(detail=False, methods=['get'])
+    def my_goals(self, request):
+        queryset = self.get_queryset()
+        serializer = GoalListSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    @extend_schema(
+        tags=['goals'],
+        description="Получение целей сотрудника по его ID"
+    )
+    @action(detail=False, methods=['get'], url_path='employee/(?P<employee_id>\d+)')
+    def employee_goals(self, request, employee_id=None):
+        try:
+            # Проверяем права доступа (только руководитель может смотреть цели сотрудника)
+            current_employee = request.user.employee_profile
+            target_employee = Employee.objects.get(pk=employee_id)
+            
+            # Проверяем, что целевой сотрудник является подчиненным текущего пользователя
+            if target_employee.manager != current_employee and request.user.role != 'admin':
+                raise PermissionDenied("У вас нет прав для просмотра целей этого сотрудника")
+                
+            goals = Goal.objects.filter(employee=target_employee).select_related(
+                'employee', 'employee__user'
+            ).prefetch_related('progress_entries')
+            
+            serializer = GoalListSerializer(goals, many=True, context={'request': request})
+            return Response(serializer.data)
+            
+        except Employee.DoesNotExist:
+            return Response(
+                {"detail": "Сотрудник не найден"},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 @extend_schema_view(

@@ -1,29 +1,74 @@
 import axiosInstance from './axios';
 import type { Goal, GoalCreate, GoalUpdate, Progress } from '../types/goals';
 
+// Вспомогательная функция для нормализации полей цели
+const normalizeGoal = (goal: Goal): Goal => {
+  // Обеспечиваем совместимость полей progress_entries и progress_updates
+  if (goal.progress_updates && !goal.progress_entries) {
+    goal.progress_entries = goal.progress_updates;
+  }
+  else if (goal.progress_entries && !goal.progress_updates) {
+    goal.progress_updates = goal.progress_entries;
+  }
+  return goal;
+};
+
+// Нормализация массива целей
+const normalizeGoals = (goals: Goal[]): Goal[] => {
+  return goals.map(normalizeGoal);
+};
+
 export const goalsApi = {
   // Get all goals (filtered by user's role and permissions)
   getAll: async (): Promise<Goal[]> => {
-    const response = await axiosInstance.get<Goal[]>('/goals/');
-    return response.data;
+    try {
+      const response = await axiosInstance.get<Goal[]>('/goals/');
+      return normalizeGoals(response.data);
+    } catch (error) {
+      console.error('Error fetching all goals:', error);
+      return [];
+    }
   },
 
   // Get goals for the current user
   getMyGoals: async (): Promise<Goal[]> => {
-    const response = await axiosInstance.get<Goal[]>('/goals/');
-    return response.data;
+    try {
+      // First try the specific endpoint for my goals
+      const response = await axiosInstance.get<Goal[]>('/goals/my_goals/');
+      return normalizeGoals(response.data);
+    } catch (error) {
+      console.error('Error fetching my goals with specific endpoint:', error);
+      // Fall back to the main endpoint which should filter by current user
+      try {
+        const fallbackResponse = await axiosInstance.get<Goal[]>('/goals/');
+        return normalizeGoals(fallbackResponse.data);
+      } catch (fallbackError) {
+        console.error('Error fetching my goals with fallback:', fallbackError);
+        return [];
+      }
+    }
   },
 
   // Get goals for a specific employee (for managers)
   getEmployeeGoals: async (employeeId: number): Promise<Goal[]> => {
-    const response = await axiosInstance.get<Goal[]>(`/goals/employee/${employeeId}/`);
-    return response.data;
+    try {
+      const response = await axiosInstance.get<Goal[]>(`/goals/employee/${employeeId}/`);
+      return normalizeGoals(response.data);
+    } catch (error) {
+      console.error(`Error fetching goals for employee ${employeeId}:`, error);
+      return [];
+    }
   },
 
   // Get a single goal by ID
   getById: async (id: number): Promise<Goal> => {
-    const response = await axiosInstance.get<Goal>(`/goals/${id}/`);
-    return response.data;
+    try {
+      const response = await axiosInstance.get<Goal>(`/goals/${id}/`);
+      return normalizeGoal(response.data);
+    } catch (error) {
+      console.error(`Error fetching goal ${id}:`, error);
+      throw error;
+    }
   },
 
   // Create a new goal
@@ -75,7 +120,12 @@ export const goalsApi = {
 
   // Get goals pending approval (for managers)
   getPendingApprovalGoals: async (): Promise<Goal[]> => {
-    const response = await axiosInstance.get<Goal[]>('/goals/pending_approval/');
-    return response.data;
+    try {
+      const response = await axiosInstance.get<Goal[]>('/goals/pending_approval/');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching pending approval goals:', error);
+      return [];
+    }
   }
 }; 
